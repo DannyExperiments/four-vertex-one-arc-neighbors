@@ -1,0 +1,29 @@
+{
+  "title": "A four-vertex counterexample for one-arc Bayesian network neighbors",
+  "upload_type": "software",
+  "creators": [
+    {
+      "name": "DannyExperiments"
+    }
+  ],
+  "keywords": [
+    "Bayesian networks",
+    "d-separation",
+    "Markov equivalence",
+    "one-arc edit",
+    "causal structure learning"
+  ],
+  "description": "<p>A four-vertex directed acyclic graph has nearest non-equivalent d-separation query distance one, while its best positive distance from any single arc insertion, deletion or reversal is two. This answers the fixed-input interpretation of Harviainen, Parviainen and Sharma's Conjecture 2.</p><p>The input is a triangle with a pendant vertex. Its nearest witness is a directed star that adds only the unconditioned separation of two leaves. Each legal one-arc reversal preserves the input signature, and every insertion or deletion changes at least two queries. Isolated vertices replicate the gap in every larger size.</p><p>Free Markov-equivalent reorientation changes this example. An alternative starting representative has one deletion to the witness. The general free-reorientation question remains unresolved here. The scope appendix credits Chickering's related theorem for nested signatures and reproduces an exact Python census through five vertices. Exact path replay, a rotating illustration and an offline explorer accompany the proof. Internally reviewed, not peer reviewed. No proof-assistant formalization is included.</p><p>Under human direction, ChatGPT Astra 6.2 (OpenAI) generated the discovery proof and its research packet. OpenAI Codex independently checked the mathematics. GPT-6.2 Sol (OpenAI) checked the literature and prepared the manuscript, exact replay, independent Python class census and illustrations. DannyExperiments maintains the repository and is the preferred citation identity. No AI system is proposed as an author.</p><p>Release v1.0.0. https://github.com/DannyExperiments/four-vertex-one-arc-neighbors/releases/tag/v1.0.0</p>",
+  "license": "other-closed",
+  "notes": "All rights reserved. Publicly downloadable files are supplied without a repository-wide reuse license.",
+  "publication_date": "2026-11-27",
+  "version": "1.0.0",
+  "access_right": "open",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/DannyExperiments/four-vertex-one-arc-neighbors/releases/tag/v1.0.0",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ]
+}

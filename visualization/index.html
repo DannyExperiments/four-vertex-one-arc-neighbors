@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A nearer DAG takes more than one edit</title>
+<style>
+:root{color-scheme:dark;--bg:#0d1723;--panel:#162638;--ink:#eef6fa;--muted:#b1c7d8;--line:#37556b;--mint:#80e2cb;--amber:#ffc27d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.55 system-ui,sans-serif}
+main{width:min(100% - 2rem,52rem);margin:2rem auto 3rem}
+h1{font-size:clamp(1.95rem,6vw,3.2rem);line-height:1.12;letter-spacing:-.035em;margin:0}
+h2{font-size:1.12rem;margin:0 0 .45rem}
+p{margin:.6rem 0}
+header p,.muted{color:var(--muted)}
+section,details{border:1px solid var(--line);border-radius:1rem;background:var(--panel);margin:1rem 0;padding:1rem}
+.choices{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0}
+button{background:#223c50;color:var(--ink);border:1px solid var(--line);font:inherit;min-height:2.75rem;cursor:pointer;padding:.35rem .6rem;border-radius:.55rem}
+button[aria-pressed=true]{background:var(--mint);color:#102925;border-color:var(--mint);font-weight:680}
+button:focus-visible,input:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+.scene{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+canvas{display:block;width:100%;height:17rem;background:#101d2c;border-radius:.6rem}
+.readout{padding:.75rem;border-radius:.6rem;border:1px solid var(--line);background:#101d2c}
+.readout output{color:var(--mint);font-weight:700}
+.range{display:flex;align-items:center;gap:.6rem}
+input[type=range]{width:100%;min-height:2.75rem;accent-color:var(--mint)}
+fieldset{display:flex;gap:1rem;border:0;margin:.7rem 0;padding:0}
+label.condition{display:inline-flex;gap:.35rem;align-items:center;min-height:2.6rem}
+summary{cursor:pointer;color:var(--mint);font-weight:680}
+@media(max-width:650px){main{margin-top:1.2rem}section,details{padding:.75rem}.scene{display:flex;flex-direction:column}.readout{order:-1}.figure{width:100%}canvas{height:13.5rem}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>A nearer DAG takes more than one edit</h1><p>Compare the fixed input, its nearest alternative, and the reorientation that changes which one-arc edits are available.</p></header>
+<section aria-labelledby="worked">
+<h2 id="worked">Select a graph</h2>
+<div class="choices" role="group" aria-label="Graph">
+<button id="d" type="button" aria-pressed="true">D · Input</button>
+<button id="h" type="button" aria-pressed="false">H · Nearest</button>
+<button id="equiv" type="button" aria-pressed="false">D′ · Equivalent</button>
+</div>
+<div class="scene">
+<div class="figure">
+<canvas id="graph" role="img" aria-label="Three-dimensional view of the selected four-vertex graph"></canvas>
+<label class="range" for="angle">Rotate <input id="angle" type="range" min="0" max="360" value="23" aria-label="Rotation angle"></label>
+</div>
+<div class="readout" aria-live="polite">
+<p id="edges">Arcs 0 → 1, 0 → 2, 0 → 3, 1 → 2.</p>
+<p id="distance">Distance from D is 0. Its best positive one-arc distance is 2.</p>
+<fieldset><legend>Condition on</legend><label class="condition"><input id="zero" type="checkbox">Vertex 0</label><label class="condition"><input id="three" type="checkbox">Vertex 3</label></fieldset>
+<p>Vertices 1 and 2 are <output id="separation">d-connected</output>.</p>
+<p class="muted" id="reason">The endpoints share an arc.</p>
+</div>
+</div>
+</section>
+<details>
+<summary>Why the fixed representative matters</summary>
+<p>H adds exactly one separation to D, namely vertices 1 and 2 with nothing conditioned. Their path in H has collider 0. Conditioning on 0 or descendant 3 activates the path.</p>
+<p>Every one-arc addition or deletion from D changes at least two queries. The legal reversals keep its signature. But D′ is Markov equivalent to D, and deleting its arc 1 → 2 gives H. The paper also proves the larger family by adding isolated vertices.</p>
+</details>
+</main>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const canvas=$("graph"),ctx=canvas.getContext("2d");
+const nodes=[[0,.22,.43],[-1,-.72,-.27],[1,-.72,-.27],[0,1,-.44]];
+const graphs={d:[[0,1],[0,2],[0,3],[1,2]],h:[[1,0],[2,0],[0,3]],equiv:[[1,0],[2,0],[0,3],[1,2]]};
+let graph="d";
+function paint(){
+  const {width,height}=canvas.getBoundingClientRect(),density=Math.min(devicePixelRatio||1,2);
+  canvas.width=Math.round(width*density);canvas.height=Math.round(height*density);ctx.scale(density,density);
+  const angle=Number($("angle").value)*Math.PI/180,pitch=.34,scale=Math.min(width,height)*.34;
+  function project([x,y,z]){
+    [x,z]=[x*Math.cos(angle)+z*Math.sin(angle),-x*Math.sin(angle)+z*Math.cos(angle)];
+    [y,z]=[y*Math.cos(pitch)-z*Math.sin(pitch),y*Math.sin(pitch)+z*Math.cos(pitch)];
+    const k=6/(6-z);
+    return [width/2+x*scale*k,height/2-y*scale*k,z];
+  }
+  const p=nodes.map(project),depth=([i,j])=>p[i][2]+p[j][2];
+  for(const [i,j] of graphs[graph].slice().sort((a,b)=>depth(a)-depth(b))){
+    const [ax,ay]=p[i],[bx,by]=p[j],d=Math.hypot(bx-ax,by-ay);
+    if(d<20)continue;
+    const theta=Math.atan2(by-ay,bx-ax),dx=Math.cos(theta),dy=Math.sin(theta),pad=Math.min(20,d/4);
+    const x=bx-pad*dx,y=by-pad*dy;
+    ctx.strokeStyle=ctx.fillStyle=i===1&&j===2?"#ffc27d":"#6f94b0";ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(ax+pad*dx,ay+pad*dy);ctx.lineTo(x,y);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-12*Math.cos(theta+.5),y-12*Math.sin(theta+.5));
+    ctx.lineTo(x-12*Math.cos(theta-.5),y-12*Math.sin(theta-.5));ctx.closePath();ctx.fill();
+  }
+  for(const i of nodes.map((_,k)=>k).sort((a,b)=>p[a][2]-p[b][2])){
+    const [x,y,z]=p[i],observed=(i===0&&$("zero").checked)||(i===3&&$("three").checked);
+    ctx.beginPath();ctx.arc(x,y,16+z,0,Math.PI*2);
+    ctx.fillStyle=observed?"#ffc27d":"#2f475c";ctx.fill();
+    ctx.strokeStyle=i===0?"#80e2cb":"#6f94b0";ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle=observed?"#132032":"#eef6fa";ctx.font="700 18px system-ui";
+    ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(i,x,y+1);
+  }
+}
+function refresh(){
+  for(const id of Object.keys(graphs))$(id).setAttribute("aria-pressed",String(graph===id));
+  $("edges").textContent="Arcs "+graphs[graph].map(([i,j])=>i+" → "+j).join(", ")+".";
+  $("distance").textContent={d:"Distance from D is 0. Its best positive one-arc distance is 2.",
+    h:"Distance from D is 1. No one-arc edit of D reaches H.",
+    equiv:"Distance from D is 0. Deleting 1 → 2 from D′ gives H."}[graph];
+  const observed=$("zero").checked||$("three").checked,separated=graph==="h"&&!observed;
+  $("separation").textContent=separated?"d-separated":"d-connected";
+  $("reason").textContent=graph!=="h"?"The endpoints share an arc.":observed?
+    "Conditioning on the collider or its descendant activates the path.":"The collider at 0 blocks the path.";
+  paint();
+}
+for(const id of Object.keys(graphs))$(id).addEventListener("click",()=>{graph=id;refresh()});
+for(const id of ["zero","three"])$(id).addEventListener("change",refresh);
+$("angle").addEventListener("input",paint);new ResizeObserver(paint).observe(canvas);refresh();
+</script>
+</body>
+</html>

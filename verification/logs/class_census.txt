@@ -1,0 +1,4 @@
+n=2: 3 DAGs; 2 signatures; maximal nearest distance 1
+n=3: 25 DAGs; 11 signatures; maximal nearest distance 2
+n=4: 543 DAGs; 185 signatures; maximal nearest distance 4
+n=5: 29,281 DAGs; 8,782 signatures; maximal nearest distance 8

@@ -1,0 +1,207 @@
+\documentclass[11pt,a4paper]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage[hmargin=1in,vmargin=.9in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={A four-vertex counterexample for one-arc Bayesian network neighbors}}
+\DeclareFontShape{OT1}{cmr}{bx}{n}{<-> cmbx10}{}
+\DeclareMathSizes{8}{8}{8}{8}
+\DeclareMathSizes{9}{9}{8}{8}
+\DeclareMathSizes{10.95}{10.95}{8}{8}
+\newtheorem{theorem}{Theorem}
+\title{A four-vertex counterexample for one-arc Bayesian network neighbors}
+\date{}
+\begin{document}
+\begin{abstract}
+A nearest graph in d-separation query distance need not be one
+arc edit from a supplied directed acyclic graph. A four-vertex example has global
+distance one and best positive one-edit distance two. Adding isolated
+vertices extends the gap to every larger size. A Markov-equivalent
+reorientation of the input does have a single edit to the witness.
+The counterexample therefore addresses the fixed-input interpretation.
+\end{abstract}
+\maketitle
+
+\section{Distance and statement}
+
+For a DAG \(D\) on vertex set \(V\), its signature \(I(D)\)
+contains \((\{u,v\},S)\) for distinct endpoints \(u,v\) and
+\(S\subseteq V\setminus\{u,v\}\) that d-separates them.
+A path is active given \(S\) if no internal noncollider is in
+\(S\), and each internal collider lies in \(S\) or has a
+descendant in \(S\). The distance \(d(D,H)\) is the size of the
+symmetric difference of the two signatures. A nearest neighbor
+has minimum positive distance, so Markov-equivalent DAGs at
+distance zero are excluded.
+
+Conjecture 2 of Harviainen, Parviainen and Sharma \cite[p.~2065]{hps}
+asks whether such a neighbor can be reached by a single arc
+insertion, deletion or reversal that preserves acyclicity. The
+opening paragraph of their Section 3.2 describes this as a
+transformation of the given DAG. We take the input orientation
+as supplied.
+
+\begin{theorem}
+On four vertices there is a DAG whose nearest non-equivalent
+alternative has d-separation distance 1, but every one-arc
+edit has distance either 0 or at least 2.
+For every \(n\ge4\), one can obtain a global minimum positive
+distance \(2^{n-4}\) and best positive one-edit distance \(2^{n-3}\).
+\end{theorem}
+
+\section{The four-vertex witness}
+
+Use vertices \(0,1,2,3\) and the two DAGs
+\[
+ D=\{0\to1,\ 0\to2,\ 0\to3,\ 1\to2\},\qquad
+ H=\{1\to0,\ 2\to0,\ 0\to3\}.
+\]
+Adjacent endpoints cannot be d-separated. In \(D\) the only
+nonadjacent pairs are \(\{1,3\},\{2,3\}\). Every path to
+vertex 3 passes through noncollider 0, and the two-step route
+using only that intermediate vertex is active when 0 is not
+conditioned on. Thus the only four separations of \(D\) are
+\[
+ 1\perp_d3\mid\{0\},\quad1\perp_d3\mid\{0,2\},\quad
+ 2\perp_d3\mid\{0\},\quad2\perp_d3\mid\{0,1\}.
+\]
+The unique corresponding paths in \(H\) again have 0 as a
+noncollider. The additional nonadjacent pair \(\{1,2\}\)
+has the sole path \(1\to0\leftarrow2\). Its collider is activated
+by conditioning on 0 or its descendant 3. Hence \(H\) adds only
+the separation \(1\perp_d2\mid\varnothing\). The distance is one
+and therefore is globally minimal among positive distances.
+
+\section{Every one-arc edit}
+
+Only the pairs \(\{1,3\},\{2,3\}\) can be added. Each
+new adjacency removes both prior separations of its endpoint
+pair. This forces distance at least two in either direction.
+
+Each deletion gives the following new separations on its endpoints.
+\[
+\begin{array}{c|l}
+\text{deleted arc}&\text{conditioning sets with a new separation}\\
+0\to1&\varnothing,\ \{3\}\\
+0\to2&\{1\},\ \{1,3\}\\
+0\to3&\varnothing,\ \{1\},\ \{2\},\ \{1,2\}\\
+1\to2&\{0\},\ \{0,3\}
+\end{array}
+\]
+For the first row the remaining route is a collider through 2.
+For the second it is a chain through 1. The third isolates
+vertex 3, and the fourth leaves a fork through 0. In the
+fourth case the two additional separations are the only changes:
+the edited graph is a fork from 0 to all three leaves and
+the previous separations remain unchanged.
+
+The reversal of \(0\to2\) is cyclic, since \(0\to1\to2\)
+remains. The three other reversals are acyclic. After any of
+them the skeleton and the set of unshielded colliders are
+unchanged; the latter is empty in all four DAGs. The standard
+equivalence criterion \cite{vp,chick95} therefore gives distance
+zero in each case. This exhausts the admissible edits. It also
+shows that the best positive distance among one-edit neighbors
+is exactly two.
+
+On two vertices the only distinct signatures arise with and
+without an arc, so a single edit always suffices. On three
+vertices, a DAG with two arcs has a path skeleton and exactly
+one separation. Adding its missing arc in an acyclic orientation
+reaches distance one. A complete DAG similarly reaches distance
+one by a deletion. A DAG with at most one arc has both possible
+separations for every nonadjacent pair. Any alternative with a
+new adjacency therefore differs on at least two queries. A
+one-arc alternative without a new adjacency is equivalent or
+empty; deleting its arc changes two queries. Adding an arc to
+the empty graph also changes exactly two. Thus four vertices
+are necessary for failure.
+
+\section{Adding isolated vertices}
+
+Add \(n-4\) isolated vertices to both graphs. If all the new
+vertices stay isolated in a comparison, each original query
+is replicated \(2^{n-4}\) times by arbitrary choices of
+additional conditioning vertices. The queries involving an
+isolated endpoint do not change. Any alternative that creates
+an arc incident to an old isolated vertex destroys the
+separation of its endpoints for all \(2^{n-2}\) possible
+conditioning sets. This cost is larger than the distance
+achieved by the padded \(H\) and the best original edit.
+The padded \(H\) is therefore still nearest at positive
+distance, now \(2^{n-4}\). The least positive one-edit
+distance is \(2\cdot2^{n-4}\) by the same argument.
+
+\section{A different question about equivalence classes}
+
+The DAG
+\[
+ D'=\{1\to0,\ 2\to0,\ 0\to3,\ 1\to2\}
+\]
+has the skeleton of \(D\) and no unshielded collider. It is
+Markov equivalent to \(D\), and deleting \(1\to2\) from it
+gives \(H\). Thus allowing free reorientation before the
+edit changes the answer for this example.
+
+More generally, Chickering's transformation theorem
+\cite[Thm.~4]{chick02} gives an attributed implication for nested
+signatures. From the graph with the larger independence model,
+covered reversals and arc additions build the other graph.
+The pairwise signatures suffice to test nesting of independence
+models, because d-separation of two vertex sets is equivalent
+to pairwise d-separation between them with the same conditions.
+Along the transformation the signature is nonincreasing by
+set inclusion. If the second class is nearest to the first
+and there were more than one strict change, the first changed
+class would be closer at positive distance. Thus exactly one
+strict change is needed, with only covered reversals before
+and after it. The same applies starting at the other end of
+a nearest pair by reversing the sequence and using the last
+strict step. In particular distance-one nearest pairs give no
+obstruction to the class-level question.
+
+The finite class-level census finds no failure through five
+vertices when free reorientation is allowed. This does not
+establish the general class-level claim. The source's chain
+calculation has a different restriction, and the undirected
+conjecture is outside the result.
+
+\section{Verification and disclosure}
+
+Internally reviewed, not peer reviewed. The exact path replay
+checks all 24 queries on the four-vertex examples and every
+possible one-arc edit. The independent Python class census
+uses ancestral moralization and checks every labeled DAG
+through five vertices. No proof-assistant formalization is
+included.
+
+Under human direction, ChatGPT Astra 6.2 (OpenAI) generated the
+discovery proof and its research packet. OpenAI Codex independently
+checked the mathematics. GPT-6.2 Sol (OpenAI) checked the literature
+and prepared the manuscript, exact replay, independent class
+census and illustrations. DannyExperiments maintains the repository
+and is the preferred citation identity. No AI system is proposed
+as an author.
+
+\begin{thebibliography}{9}
+\raggedright
+\bibitem{hps}
+J. Harviainen, P. Parviainen and V. S. Sharma,
+\emph{Learning Bayesian and Markov Networks with an Unreliable
+Oracle}, Proc. UAI, PMLR \textbf{337} (2026), 2059--2074.
+\href{https://proceedings.mlr.press/v337/harviainen26a.html}{Proceedings record}.
+\bibitem{vp}
+T. S. Verma and J. Pearl, \emph{Equivalence and Synthesis of
+Causal Models}, Proc. UAI (1990), 220--227.
+\href{https://ftp.cs.ucla.edu/tech-report/1991-reports/910020.pdf}{Author report}.
+\bibitem{chick95}
+D. M. Chickering, \emph{A Transformational Characterization of
+Equivalent Bayesian Network Structures}, Proc. UAI (1995), 87--98.
+\href{https://maxchickering.com/publications/uai95.pdf}{Author PDF}.
+\bibitem{chick02}
+D. M. Chickering, \emph{Optimal Structure Identification With
+Greedy Search}, Journal of Machine Learning Research \textbf{3}
+(2002), 507--554.
+\href{https://jmlr.org/papers/v3/chickering02b.html}{Journal record}.
+\end{thebibliography}
+\end{document}

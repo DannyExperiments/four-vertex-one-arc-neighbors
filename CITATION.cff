@@ -1,0 +1,18 @@
+cff-version: "1.2.0"
+message: "If you cite this release, please cite the version-specific DOI."
+title: "A four-vertex counterexample for one-arc Bayesian network neighbors"
+type: software
+authors:
+  - name: "DannyExperiments"
+doi: "10.5281/zenodo.24572566"
+version: "1.0.0"
+date-released: "2026-11-27"
+repository-code: "https://github.com/DannyExperiments/four-vertex-one-arc-neighbors"
+url: "https://github.com/DannyExperiments/four-vertex-one-arc-neighbors/releases/tag/v1.0.0"
+abstract: "A four-vertex counterexample to one-arc nearest neighbors in d-separation query distance for a fixed input DAG."
+keywords:
+  - "Bayesian networks"
+  - "d-separation"
+  - "Markov equivalence"
+  - "one-arc edit"
+  - "causal structure learning"
